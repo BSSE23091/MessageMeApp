@@ -1,0 +1,31 @@
+@import "semantic-ui";
+
+.chatbox {
+  height: 320px;
+}
+
+/* Main chat container: fixed height so page isn't scrollable */
+.chat-container {
+  height: 300px; /* adjust this to whatever height prevents page scroll */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* prevents input from leaking outside */
+}
+
+/* Messages area gets all leftover space and scrolls */
+.messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+/* Input area stays at bottom, fixed inside card */
+.chat-input-area {
+  flex-shrink: 0; /* input bar never collapses or moves out */
+  padding-top: 8px;
+}
+
+/* Fix input + icon button alignment */
+.full-width {
+  width: 100%;
+}

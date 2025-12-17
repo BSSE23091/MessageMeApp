@@ -1,0 +1,15 @@
+<a class="item" href="<%= chatroom_path %>">
+  Chatroom
+</a>
+
+<div class="right menu">
+  <% if logged_in? %>
+    <div class="ui dropdown item">
+      Account <i class="dropdown icon"></i>
+      <div class="menu">
+        <span class="item"><%= current_user.username %></span>
+        <%= link_to "Log Out", logout_path, method: :delete, class: "item" %>
+      </div>
+    </div>
+  <% end %>
+</div>

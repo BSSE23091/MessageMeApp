@@ -1,0 +1,103 @@
+<h2 class="ui center aligned icon header">
+  <i class="circular orange comments icon"></i>
+  Private Conversation
+</h2>
+
+<% if flash[:notice] %>
+  <div class="ui positive message flash-msg">
+    <%= flash[:notice] %>
+  </div>
+<% elsif flash[:alert] %>
+  <div class="ui negative message flash-msg">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<div class="ui stackable grid">
+  <!-- Left Column -->
+  <div class="sixteen wide tablet twelve wide computer column">
+    <div class="ui fluid raised card chat-container">
+      
+      <!-- Conversation Header -->
+      <div class="content">
+        <h3 class="ui header">
+          <% other_user = @conversation.sender_id == current_user.id ? @conversation.receiver : @conversation.sender %>
+          <i class="user icon"></i>
+          <div class="content">
+            Conversation with <%= other_user.username %>
+            <div class="sub header">
+              <%= link_to "← Back to Chatroom", chatroom_path(tab: 'messages'), class: "ui small link" %>
+            </div>
+          </div>
+        </h3>
+      </div>
+
+      <!-- Messages Feed -->
+      <div class="content messages-area">
+        <div class="ui feed">
+          <% if @messages.any? %>
+            <% @messages.each do |message| %>
+              <div class="event">
+                <div class="content">
+                  <div class="summary">
+                    <a><%= message.user.username %></a>: <%= message.body %>
+                  </div>
+                  <div class="date">
+                    <%= time_ago_in_words(message.created_at) %> ago
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% else %>
+            <div class="ui message">
+              <p>No messages yet. Start the conversation!</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Message Form -->
+      <div class="extra content chat-input-area">
+        <%= form_with model: [@conversation, @message], url: conversation_messages_path(@conversation), local: true, html: { class: "ui form" } do |f| %>
+          <div class="field">
+            <div class="ui action input full-width">
+              <%= f.text_field :body, placeholder: "Type your message...", class: "prompt" %>
+
+              <button class="ui orange icon button">
+                <i class="paper plane icon"></i>
+              </button>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="sixteen wide tablet four wide computer column">
+    <div class="ui fluid raised card">
+      <div class="content">
+        <h4 class="ui header">Conversation Info</h4>
+        <div class="ui relaxed list">
+          <div class="item">
+            <i class="user icon"></i>
+            <div class="content">
+              <div class="header">With</div>
+              <div class="description"><%= other_user.username %></div>
+            </div>
+          </div>
+          <div class="item">
+            <i class="comments icon"></i>
+            <div class="content">
+              <div class="header">Messages</div>
+              <div class="description"><%= @messages.count %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+

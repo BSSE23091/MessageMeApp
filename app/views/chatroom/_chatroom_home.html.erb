@@ -1,0 +1,44 @@
+<div class="ui fluid raised card chat-container">
+  <!-- Messages Feed -->
+  <div class="content messages-area">
+    <div class="ui feed">
+      <h4 class="ui header">Global Chat</h4>
+
+      <% @messages.each do |message| %>
+        <div class="event">
+          <div class="content">
+            <div class="summary">
+              <a><%= message.user.username %></a>: <%= message.body %>
+            </div>
+            <div class="date">
+              <%= time_ago_in_words(message.created_at) %> ago
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+
+  <!-- Message Form -->
+  <div class="extra content chat-input-area">
+    <% if logged_in? %>
+      <%= form_with model: Message.new, url: messages_path, local: true, html: { class: "ui form" } do |f| %>
+        <div class="field">
+          <div class="ui action input full-width">
+            <%= f.text_field :body, placeholder: "Message...", class: "prompt" %>
+
+            <button class="ui orange icon button">
+              <i class="paper plane icon"></i>
+            </button>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="ui message">
+        <div class="header">Log in to send messages</div>
+      </div>
+    <% end %>
+  </div>
+</div>
+

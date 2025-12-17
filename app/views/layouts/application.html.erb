@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MessageMeApp</title>
+    <%= favicon_link_tag asset_path('favicon.ico') %>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- Stylesheets (Sprockets) -->
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+
+    <!-- JavaScript (Sprockets: jQuery + Semantic UI) -->
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+
+    <!-- JavaScript (Webpacker) -->
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+
+    <!-- Navigation Bar -->
+    <div class="ui small stackable menu">
+      <%= render 'layouts/navigation' %>
+    </div>
+
+
+    <!-- Main Page Content -->
+    <%= yield %>
+
+    <!-- Auto-hide Flash Messages -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const flashMessages = document.querySelectorAll('.ui.message');
+        if (flashMessages.length > 0) {
+          setTimeout(() => {
+            flashMessages.forEach(msg => {
+              msg.style.transition = "opacity 0.5s ease-out";
+              msg.style.opacity = 0;
+              setTimeout(() => msg.remove(), 500);
+            });
+          }, 3000); // 3 seconds
+        }
+      });
+    </script>
+
+  </body>
+</html>

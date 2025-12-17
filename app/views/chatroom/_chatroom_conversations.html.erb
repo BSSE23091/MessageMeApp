@@ -1,0 +1,53 @@
+<div class="ui fluid raised card">
+  <div class="content">
+    <h3 class="ui header">
+      <i class="comments icon"></i>
+      <div class="content">
+        My Conversations
+        <div class="sub header">Your private message threads</div>
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <% if @conversations.any? %>
+      <div class="ui relaxed divided list">
+        <% @conversations.each do |conversation| %>
+          <% other_user = conversation.sender_id == current_user.id ? conversation.receiver : conversation.sender %>
+          <% last_message = conversation.messages.order(created_at: :desc).first %>
+          <div class="item">
+            <div class="right floated content mobile-hidden">
+              <%= link_to "Open", conversation_path(conversation), class: "ui small orange button" %>
+            </div>
+            <i class="comment icon"></i>
+            <div class="content">
+              <div class="header">
+                Conversation with <%= other_user.username %>
+              </div>
+              <% if last_message %>
+                <div class="description">
+                  <em><%= truncate(last_message.body, length: 50) %></em>
+                  <span class="ui grey text" style="margin-left: 10px;">
+                    <%= time_ago_in_words(last_message.created_at) %> ago
+                  </span>
+                </div>
+              <% else %>
+                <div class="description">
+                  <em class="ui grey text">No messages yet</em>
+                </div>
+              <% end %>
+              <div class="mobile-only" style="margin-top: 10px;">
+                <%= link_to "Open", conversation_path(conversation), class: "ui small orange button" %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="ui message">
+        <div class="header">No conversations yet</div>
+        <p>Go to the Friends tab to start a conversation!</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+

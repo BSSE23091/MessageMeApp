@@ -1,0 +1,51 @@
+<div class="ui fluid raised card">
+  <div class="content">
+    <h3 class="ui header">
+      <i class="heart icon"></i>
+      <div class="content">
+        My Friends
+        <div class="sub header">Message your friends privately</div>
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <% if @friends.any? %>
+      <div class="ui relaxed divided list">
+        <% @friends.each do |friend| %>
+          <div class="item">
+            <div class="right floated content mobile-hidden">
+              <%= form_with url: conversations_path, method: :post, local: true, 
+                  html: { class: "ui form", style: "display: inline-block; margin-right: 10px;" } do |f| %>
+                <%= hidden_field_tag :user_id, friend.id %>
+                <%= f.submit "Message", class: "ui small orange button" %>
+              <% end %>
+              <%= button_to "Remove Friend", friendship_path(friend), method: :delete, 
+                  class: "ui small red button", 
+                  form: { style: "display: inline-block;" } %>
+            </div>
+            <i class="user icon"></i>
+            <div class="content">
+              <div class="header"><%= friend.username %></div>
+              <div class="mobile-only" style="margin-top: 10px;">
+                <%= form_with url: conversations_path, method: :post, local: true, 
+                    html: { class: "ui form", style: "display: inline-block; margin-right: 10px;" } do |f| %>
+                  <%= hidden_field_tag :user_id, friend.id %>
+                  <%= f.submit "Message", class: "ui small orange button" %>
+                <% end %>
+                <%= button_to "Remove Friend", friendship_path(friend), method: :delete, 
+                    class: "ui small red button", 
+                    form: { style: "display: inline-block;" } %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="ui message">
+        <div class="header">No friends yet</div>
+        <p>Go to the Users tab to add friends!</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+

@@ -1,0 +1,53 @@
+<h2 class="ui center aligned icon header">
+  <i class="circular orange coffee icon"></i>
+  Chatroom
+</h2>
+
+<% if flash[:notice] %>
+  <div class="ui positive message flash-msg">
+    <%= flash[:notice] %>
+  </div>
+<% elsif flash[:alert] %>
+  <div class="ui negative message flash-msg">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
+
+<div class="ui stackable grid">
+
+  <!-- Left Column -->
+  <div class="sixteen wide tablet twelve wide computer column">
+    <% tab = params[:tab] || 'home' %>
+    <% case tab %>
+    <% when 'users' %>
+      <%= render 'chatroom_users' %>
+    <% when 'friends' %>
+      <%= render 'chatroom_friends' %>
+    <% when 'messages' %>
+      <%= render 'chatroom_conversations' %>
+    <% else %>
+      <%= render 'chatroom_home' %>
+    <% end %>
+  </div>
+
+  <!-- Right Column -->
+  <div class="sixteen wide tablet four wide computer column">
+    <div class="ui fluid raised card">
+      <div class="content">
+        <% current_tab = params[:tab] || 'home' %>
+        <div class="ui vertical menu">
+          <%= link_to chatroom_path(tab: 'users'), class: "item #{'active' if current_tab == 'users'}" do %>
+            <i class="users icon"></i> Users
+          <% end %>
+          <%= link_to chatroom_path(tab: 'friends'), class: "item #{'active' if current_tab == 'friends'}" do %>
+            <i class="heart icon"></i> Friends
+          <% end %>
+          <%= link_to chatroom_path(tab: 'messages'), class: "item #{'active' if current_tab == 'messages'}" do %>
+            <i class="comments icon"></i> Messages
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

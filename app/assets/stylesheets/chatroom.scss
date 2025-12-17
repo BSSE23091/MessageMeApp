@@ -1,0 +1,122 @@
+// Place all the styles related to the chatroom controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+// Responsive utilities
+.mobile-only {
+  display: none !important;
+}
+
+.mobile-hidden {
+  display: block !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .mobile-only {
+    display: block !important;
+  }
+
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  // Better spacing on mobile
+  .ui.grid {
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+  }
+
+  // Full width cards on mobile
+  .ui.fluid.card {
+    margin: 0.5rem 0 !important;
+  }
+
+  // Better button spacing
+  .ui.button {
+    margin: 0.25rem 0 !important;
+  }
+
+  // Stack buttons vertically on mobile
+  .right.floated.content.mobile-only {
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 0.5rem;
+
+    .ui.button {
+      width: 100%;
+      margin: 0.25rem 0 !important;
+    }
+
+    .ui.form {
+      width: 100%;
+
+      .ui.button {
+        width: 100%;
+      }
+    }
+  }
+
+  // Better list item spacing
+  .ui.relaxed.divided.list .item {
+    padding: 1rem 0 !important;
+  }
+
+  // Header adjustments
+  h2.ui.center.aligned.icon.header {
+    font-size: 1.5rem !important;
+    padding: 1rem 0.5rem !important;
+  }
+
+  // Menu adjustments
+  .ui.vertical.menu {
+    .item {
+      padding: 1rem !important;
+    }
+  }
+
+  // Form input full width on mobile
+  .ui.action.input {
+    width: 100% !important;
+
+    input {
+      width: calc(100% - 50px) !important;
+    }
+  }
+
+  // Message feed adjustments
+  .messages-area {
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  // Better padding for content areas
+  .ui.card > .content {
+    padding: 1rem !important;
+  }
+
+  // Stackable grid adjustments
+  .ui.stackable.grid > .column {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  // Navigation menu improvements
+  .ui.menu {
+    .item {
+      padding: 0.75rem 0.5rem !important;
+    }
+  }
+
+  // Flash message adjustments
+  .flash-msg {
+    margin: 0.5rem !important;
+  }
+
+  // Label adjustments
+  .ui.label {
+    font-size: 0.85rem !important;
+    padding: 0.4em 0.6em !important;
+  }
+}
