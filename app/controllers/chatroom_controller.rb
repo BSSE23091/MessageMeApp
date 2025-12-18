@@ -2,8 +2,8 @@ class ChatroomController < ApplicationController
   before_action :require_user
 
   def index
-    # Global chat
-    @messages = Message.includes(:user).order(created_at: :asc)
+    # Global chat - only show messages that are NOT part of a conversation (conversation_id is nil)
+    @messages = Message.where(conversation_id: nil).includes(:user).order(created_at: :asc)
 
     # All users (for "Users" tab)
     @users = User.where.not(id: current_user.id)

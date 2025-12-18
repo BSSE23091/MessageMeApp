@@ -13,7 +13,7 @@
   </div>
 <% end %>
 
-<div class="ui stackable grid">
+<div class="ui stackable grid" data-conversation-id="<%= @conversation.id %>">
   <!-- Left Column -->
   <div class="sixteen wide tablet twelve wide computer column">
     <div class="ui fluid raised card chat-container">
@@ -33,20 +33,11 @@
       </div>
 
       <!-- Messages Feed -->
-      <div class="content messages-area">
+      <div class="content messages-area" data-conversation-messages>
         <div class="ui feed">
           <% if @messages.any? %>
             <% @messages.each do |message| %>
-              <div class="event">
-                <div class="content">
-                  <div class="summary">
-                    <a><%= message.user.username %></a>: <%= message.body %>
-                  </div>
-                  <div class="date">
-                    <%= time_ago_in_words(message.created_at) %> ago
-                  </div>
-                </div>
-              </div>
+              <%= render partial: "messages/message", locals: { message: message } %>
             <% end %>
           <% else %>
             <div class="ui message">
@@ -58,10 +49,10 @@
 
       <!-- Message Form -->
       <div class="extra content chat-input-area">
-        <%= form_with model: [@conversation, @message], url: conversation_messages_path(@conversation), local: true, html: { class: "ui form" } do |f| %>
+        <%= form_with model: [@conversation, @message], url: conversation_messages_path(@conversation), remote: true, html: { class: "ui form", data: { conversation_message_form: true } } do |f| %>
           <div class="field">
             <div class="ui action input full-width">
-              <%= f.text_field :body, placeholder: "Type your message...", class: "prompt" %>
+              <%= f.text_field :body, placeholder: "Type your message...", class: "prompt", data: { conversation_message_input: true } %>
 
               <button class="ui orange icon button">
                 <i class="paper plane icon"></i>

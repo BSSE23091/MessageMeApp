@@ -1,20 +1,11 @@
 <div class="ui fluid raised card chat-container">
   <!-- Messages Feed -->
-  <div class="content messages-area">
+  <div class="content messages-area" data-global-messages>
     <div class="ui feed">
       <h4 class="ui header">Global Chat</h4>
 
       <% @messages.each do |message| %>
-        <div class="event">
-          <div class="content">
-            <div class="summary">
-              <a><%= message.user.username %></a>: <%= message.body %>
-            </div>
-            <div class="date">
-              <%= time_ago_in_words(message.created_at) %> ago
-            </div>
-          </div>
-        </div>
+        <%= render partial: "messages/message", locals: { message: message } %>
       <% end %>
 
     </div>
@@ -23,10 +14,10 @@
   <!-- Message Form -->
   <div class="extra content chat-input-area">
     <% if logged_in? %>
-      <%= form_with model: Message.new, url: messages_path, local: true, html: { class: "ui form" } do |f| %>
+      <%= form_with model: Message.new, url: messages_path, remote: true, html: { class: "ui form", data: { global_message_form: true } } do |f| %>
         <div class="field">
           <div class="ui action input full-width">
-            <%= f.text_field :body, placeholder: "Message...", class: "prompt" %>
+            <%= f.text_field :body, placeholder: "Message...", class: "prompt", data: { global_message_input: true } %>
 
             <button class="ui orange icon button">
               <i class="paper plane icon"></i>

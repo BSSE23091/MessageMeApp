@@ -5,12 +5,12 @@ Rails.application.routes.draw do
   resources :users, only: [:show]   # Needed for profiles & friend lists
 
   # Login/Logout
+  root 'sessions#new'
   get 'login', to: 'sessions#new'
   post 'login', to: 'sessions#create'
   delete 'logout', to: 'sessions#destroy'
 
   # Root → Chatroom
-  root 'chatroom#index'
   get 'chatroom', to: 'chatroom#index'
 
   # Messages (global chat)

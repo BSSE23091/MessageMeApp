@@ -22,9 +22,25 @@ class MessagesController < ApplicationController
       @message.user = current_user
 
       if @message.save
-        redirect_to conversation_path(conversation), notice: "Message sent!"
+        # Broadcast to conversation stream
+        rendered_message = render_to_string(
+          partial: "messages/message",
+          locals: { message: @message }
+        )
+
+        # Use explicit hash argument so Ruby treats this as 2 positional args
+        ChatroomChannel.broadcast_to(conversation, { html: rendered_message })
+        Rails.logger.info "Broadcasted DM message to conversation #{conversation.id}"
+
+        respond_to do |format|
+          format.html { redirect_to conversation_path(conversation) }
+          format.js   { head :ok }
+        end
       else
-        redirect_to conversation_path(conversation), alert: @message.errors.full_messages.to_sentence
+        respond_to do |format|
+          format.html { redirect_to conversation_path(conversation), alert: @message.errors.full_messages.to_sentence }
+          format.js   { render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity }
+        end
       end
 
     else
@@ -32,9 +48,24 @@ class MessagesController < ApplicationController
       @message = current_user.messages.build(message_params)
 
       if @message.save
-        redirect_to chatroom_path, notice: "Message sent!"
+        # Broadcast to global chat stream
+        rendered_message = render_to_string(
+          partial: "messages/message",
+          locals: { message: @message }
+        )
+
+        # Use explicit hash argument so Ruby treats this as 2 positional args
+        ActionCable.server.broadcast("chatroom_global", { html: rendered_message })
+
+        respond_to do |format|
+          format.html { redirect_to chatroom_path }
+          format.js   { head :ok }
+        end
       else
-        redirect_to chatroom_path, alert: @message.errors.full_messages.to_sentence
+        respond_to do |format|
+          format.html { redirect_to chatroom_path, alert: @message.errors.full_messages.to_sentence }
+          format.js   { render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity }
+        end
       end
     end
   end
