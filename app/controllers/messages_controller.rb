@@ -32,6 +32,21 @@ class MessagesController < ApplicationController
         ChatroomChannel.broadcast_to(conversation, { html: rendered_message })
         Rails.logger.info "Broadcasted DM message to conversation #{conversation.id}"
 
+        # Send notification to the other participant (not the sender)
+        other_user = conversation.sender_id == current_user.id ? conversation.receiver : conversation.sender
+        NotificationChannel.broadcast_to(
+          other_user,
+          {
+            type: 'new_message',
+            message_type: 'dm',
+            conversation_id: conversation.id,
+            sender_id: current_user.id,
+            sender_username: current_user.username,
+            message_preview: @message.body.truncate(50),
+            message_id: @message.id
+          }
+        )
+
         respond_to do |format|
           format.html { redirect_to conversation_path(conversation) }
           format.js   { head :ok }
@@ -56,6 +71,21 @@ class MessagesController < ApplicationController
 
         # Use explicit hash argument so Ruby treats this as 2 positional args
         ActionCable.server.broadcast("chatroom_global", { html: rendered_message })
+
+        # Send notifications to all users except the sender
+        User.where.not(id: current_user.id).find_each do |user|
+          NotificationChannel.broadcast_to(
+            user,
+            {
+              type: 'new_message',
+              message_type: 'global',
+              sender_id: current_user.id,
+              sender_username: current_user.username,
+              message_preview: @message.body.truncate(50),
+              message_id: @message.id
+            }
+          )
+        end
 
         respond_to do |format|
           format.html { redirect_to chatroom_path }

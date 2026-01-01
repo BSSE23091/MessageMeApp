@@ -16,8 +16,17 @@ Rails.application.routes.draw do
   # Messages (global chat)
   resources :messages, only: [:create]
 
-  # Friendships (add/remove friends)
-  resources :friendships, only: [:create, :destroy]
+  # Friendships (remove friends only - adding now goes through friend requests)
+  resources :friendships, only: [:destroy]
+
+  # Friend Requests
+  resources :friend_requests, only: [:create] do
+    member do
+      post :accept
+      post :reject
+      post :cancel
+    end
+  end
 
   # Direct Message Conversations (DM system)
   resources :conversations, only: [:index, :show, :create] do

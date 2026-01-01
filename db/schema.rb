@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_12_10_124232) do
+ActiveRecord::Schema.define(version: 2026_01_01_160730) do
 
   create_table "conversations", force: :cascade do |t|
     t.integer "sender_id", null: false
@@ -20,6 +20,18 @@ ActiveRecord::Schema.define(version: 2025_12_10_124232) do
     t.index ["receiver_id"], name: "index_conversations_on_receiver_id"
     t.index ["sender_id", "receiver_id"], name: "index_conversations_on_sender_id_and_receiver_id", unique: true
     t.index ["sender_id"], name: "index_conversations_on_sender_id"
+  end
+
+  create_table "friend_requests", force: :cascade do |t|
+    t.integer "sender_id", null: false
+    t.integer "receiver_id", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["receiver_id"], name: "index_friend_requests_on_receiver_id"
+    t.index ["sender_id", "receiver_id"], name: "index_friend_requests_on_sender_id_and_receiver_id"
+    t.index ["sender_id"], name: "index_friend_requests_on_sender_id"
+    t.index ["status"], name: "index_friend_requests_on_status"
   end
 
   create_table "friendships", force: :cascade do |t|
@@ -48,5 +60,7 @@ ActiveRecord::Schema.define(version: 2025_12_10_124232) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "friend_requests", "users", column: "receiver_id"
+  add_foreign_key "friend_requests", "users", column: "sender_id"
   add_foreign_key "messages", "conversations"
 end

@@ -14,6 +14,10 @@ class User < ApplicationRecord
   has_many :inverse_friendships, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
   has_many :followers, through: :inverse_friendships, source: :user
 
+  # friend requests
+  has_many :sent_friend_requests, class_name: "FriendRequest", foreign_key: "sender_id", dependent: :destroy
+  has_many :received_friend_requests, class_name: "FriendRequest", foreign_key: "receiver_id", dependent: :destroy
+
   # conversations (as sender or receiver)
   has_many :sent_conversations, class_name: "Conversation", foreign_key: "sender_id", dependent: :destroy
   has_many :received_conversations, class_name: "Conversation", foreign_key: "receiver_id", dependent: :destroy

@@ -1,0 +1,91 @@
+<div class="ui fluid raised card">
+  <div class="content">
+    <h3 class="ui header">
+      <i class="user plus icon"></i>
+      <div class="content">
+        Friend Requests
+        <div class="sub header">Manage your friend requests</div>
+      </div>
+    </h3>
+  </div>
+  <div class="content">
+    <% 
+      # Load all pending requests with proper includes
+      received_requests = current_user.received_friend_requests
+                                        .where(status: 'pending')
+                                        .includes(:sender)
+                                        .order(created_at: :desc)
+      sent_requests = current_user.sent_friend_requests
+                                  .where(status: 'pending')
+                                  .includes(:receiver)
+                                  .order(created_at: :desc)
+    %>
+
+    <!-- Received Requests -->
+    <% if received_requests.any? %>
+      <h4 class="ui dividing header">
+        <i class="inbox icon"></i>
+        Received Requests (<%= received_requests.count %>)
+      </h4>
+      <div class="ui relaxed divided list">
+        <% received_requests.each do |request| %>
+          <div class="item">
+            <div class="right floated content">
+              <%= form_with url: accept_friend_request_path(request), method: :post, local: true,
+                  html: { class: "ui form", style: "display: inline-block;" } do |f| %>
+                <%= f.submit "Accept", class: "ui small green button" %>
+              <% end %>
+              <%= form_with url: reject_friend_request_path(request), method: :post, local: true,
+                  html: { class: "ui form", style: "display: inline-block; margin-left: 5px;" } do |f| %>
+                <%= f.submit "Reject", class: "ui small red button" %>
+              <% end %>
+            </div>
+            <i class="user icon"></i>
+            <div class="content">
+              <div class="header"><%= request.sender.username %></div>
+              <div class="description">
+                Sent <%= time_ago_in_words(request.created_at) %> ago
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Sent Requests -->
+    <% if sent_requests.any? %>
+      <h4 class="ui dividing header" style="<%= 'margin-top: 20px;' if received_requests.any? %>">
+        <i class="paper plane icon"></i>
+        Sent Requests (<%= sent_requests.count %>)
+      </h4>
+      <div class="ui relaxed divided list">
+        <% sent_requests.each do |request| %>
+          <div class="item">
+            <div class="right floated content">
+              <%= form_with url: cancel_friend_request_path(request), method: :post, local: true,
+                  html: { class: "ui form", style: "display: inline-block;" } do |f| %>
+                <%= f.submit "Cancel", class: "ui small orange button" %>
+              <% end %>
+            </div>
+            <i class="user icon"></i>
+            <div class="content">
+              <div class="header"><%= request.receiver.username %></div>
+              <div class="description">
+                Sent <%= time_ago_in_words(request.created_at) %> ago
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Empty State -->
+    <% if received_requests.empty? && sent_requests.empty? %>
+      <div class="ui message">
+        <div class="header">No friend requests</div>
+        <p>You don't have any pending friend requests. Visit the Users tab to send friend requests!</p>
+      </div>
+    <% end %>
+  </div>
+</div>
+

@@ -3,35 +3,71 @@
   Create your account on messageMe
 </h2>
 
+<% if flash[:alert] %>
+  <div class="ui negative message flash-msg">
+    <%= flash[:alert] %>
+  </div>
+<% elsif flash[:notice] %>
+  <div class="ui positive message flash-msg">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
 <div class="ui centered stackable grid" style="margin-top: 40px;">
   <div class="sixteen wide mobile twelve wide tablet ten wide computer column"> 
     <div class="ui placeholder segment">
 
-      <div class="ui form">
+      <div class="ui form <%= 'error' if @user&.errors&.any? %>">
         <%= form_with model: @user, local: true do |f| %>
 
-          <div class="field">
+          <% if @user&.errors&.any? %>
+            <div class="ui error message">
+              <div class="header">Please fix the following errors:</div>
+              <ul class="list">
+                <% @user.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div class="field <%= 'error' if @user&.errors&.include?(:username) %>">
             <label>Username</label>
             <div class="ui left icon input">
-              <%= f.text_field :username, placeholder: "Username" %>
+              <%= f.text_field :username, placeholder: "Username (3-10 characters)" %>
               <i class="user icon"></i>
             </div>
+            <% if @user&.errors&.include?(:username) %>
+              <div class="ui pointing red basic label">
+                <%= @user.errors[:username].first %>
+              </div>
+            <% end %>
           </div>
 
-          <div class="field">
+          <div class="field <%= 'error' if @user&.errors&.include?(:password) %>">
             <label>Password</label>
             <div class="ui left icon input">
               <%= f.password_field :password, placeholder: "Password" %>
               <i class="lock icon"></i>
             </div>
+            <% if @user&.errors&.include?(:password) %>
+              <div class="ui pointing red basic label">
+                <%= @user.errors[:password].first %>
+              </div>
+            <% end %>
           </div>
 
-          <div class="field">
+          <div class="field <%= 'error' if @user&.errors&.include?(:password_confirmation) %>">
             <label>Confirm Password</label>
             <div class="ui left icon input">
               <%= f.password_field :password_confirmation, placeholder: "Confirm Password" %>
               <i class="lock icon"></i>
             </div>
+            <% if @user&.errors&.include?(:password_confirmation) %>
+              <div class="ui pointing red basic label">
+                <%= @user.errors[:password_confirmation].first %>
+              </div>
+            <% end %>
           </div>
 
           <%= f.submit "Sign Up", class: "ui big button orange" %>

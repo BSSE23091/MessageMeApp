@@ -12,7 +12,21 @@
     <% if @users.any? %>
       <div class="ui relaxed divided list">
         <% @users.each do |user| %>
-          <% is_friend = current_user.friend_with?(user) %>
+          <% 
+            is_friend = current_user.friend_with?(user)
+            # Check for sent requests (current_user sent to this user)
+            sent_request = FriendRequest.where(
+              sender_id: current_user.id,
+              receiver_id: user.id,
+              status: 'pending'
+            ).first
+            # Check for received requests (this user sent to current_user)
+            received_request = FriendRequest.where(
+              sender_id: user.id,
+              receiver_id: current_user.id,
+              status: 'pending'
+            ).first
+          %>
           <div class="item">
             <div class="right floated content mobile-hidden">
               <% if is_friend %>
@@ -22,11 +36,28 @@
                 <%= button_to "Remove Friend", friendship_path(user), method: :delete, 
                     class: "ui small red button", 
                     form: { style: "display: inline-block; margin-left: 10px;" } %>
+              <% elsif sent_request %>
+                <span class="ui yellow label">
+                  <i class="clock icon"></i> Request Sent
+                </span>
+                <%= form_with url: cancel_friend_request_path(sent_request), method: :post, local: true,
+                    html: { class: "ui form", style: "display: inline-block; margin-left: 10px;" } do |f| %>
+                  <%= f.submit "Cancel", class: "ui small orange button" %>
+                <% end %>
+              <% elsif received_request %>
+                <span class="ui blue label">
+                  <i class="inbox icon"></i> Request Received
+                </span>
+                <%= form_with url: accept_friend_request_path(received_request), method: :post, local: true,
+                    html: { class: "ui form", style: "display: inline-block; margin-left: 10px;" } do |f| %>
+                  <%= f.submit "Accept", class: "ui small green button" %>
+                <% end %>
+                <%= link_to "View All", chatroom_path(tab: 'friend_requests'), class: "ui small blue button" %>
               <% else %>
-                <%= form_with url: friendships_path, method: :post, local: true, 
+                <%= form_with url: friend_requests_path, method: :post, local: true, 
                     html: { class: "ui form", style: "display: inline-block;" } do |f| %>
-                  <%= hidden_field_tag :friend_id, user.id %>
-                  <%= f.submit "Add Friend", class: "ui small orange button" %>
+                  <%= hidden_field_tag :receiver_id, user.id %>
+                  <%= f.submit "Send Friend Request", class: "ui small orange button" %>
                 <% end %>
               <% end %>
             </div>
@@ -41,11 +72,28 @@
                   <%= button_to "Remove Friend", friendship_path(user), method: :delete, 
                       class: "ui small red button", 
                       form: { style: "display: inline-block; margin-left: 10px;" } %>
+                <% elsif sent_request %>
+                  <span class="ui yellow label">
+                    <i class="clock icon"></i> Request Sent
+                  </span>
+                  <%= form_with url: cancel_friend_request_path(sent_request), method: :post, local: true,
+                      html: { class: "ui form", style: "display: inline-block; margin-left: 10px;" } do |f| %>
+                    <%= f.submit "Cancel", class: "ui small orange button" %>
+                  <% end %>
+                <% elsif received_request %>
+                  <span class="ui blue label">
+                    <i class="inbox icon"></i> Request Received
+                  </span>
+                  <%= form_with url: accept_friend_request_path(received_request), method: :post, local: true,
+                      html: { class: "ui form", style: "display: inline-block; margin-left: 10px;" } do |f| %>
+                    <%= f.submit "Accept", class: "ui small green button" %>
+                  <% end %>
+                  <%= link_to "View All", chatroom_path(tab: 'friend_requests'), class: "ui small blue button" %>
                 <% else %>
-                  <%= form_with url: friendships_path, method: :post, local: true, 
+                  <%= form_with url: friend_requests_path, method: :post, local: true, 
                       html: { class: "ui form", style: "display: inline-block;" } do |f| %>
-                    <%= hidden_field_tag :friend_id, user.id %>
-                    <%= f.submit "Add Friend", class: "ui small orange button" %>
+                    <%= hidden_field_tag :receiver_id, user.id %>
+                    <%= f.submit "Send Friend Request", class: "ui small orange button" %>
                   <% end %>
                 <% end %>
               </div>

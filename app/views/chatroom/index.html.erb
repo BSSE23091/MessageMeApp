@@ -25,6 +25,8 @@
       <%= render 'chatroom_friends' %>
     <% when 'messages' %>
       <%= render 'chatroom_conversations' %>
+    <% when 'friend_requests' %>
+      <%= render 'chatroom_friend_requests' %>
     <% else %>
       <%= render 'chatroom_home' %>
     <% end %>
@@ -42,8 +44,16 @@
           <%= link_to chatroom_path(tab: 'friends'), class: "item #{'active' if current_tab == 'friends'}" do %>
             <i class="heart icon"></i> Friends
           <% end %>
-          <%= link_to chatroom_path(tab: 'messages'), class: "item #{'active' if current_tab == 'messages'}" do %>
+          <%= link_to chatroom_path(tab: 'friend_requests'), class: "item #{'active' if current_tab == 'friend_requests'}" do %>
+            <i class="user plus icon"></i> Friend Requests
+            <% pending_count = current_user.received_friend_requests.pending_requests.count %>
+            <% if pending_count > 0 %>
+              <div class="ui orange circular label"><%= pending_count %></div>
+            <% end %>
+          <% end %>
+          <%= link_to chatroom_path(tab: 'messages'), class: "item #{'active' if current_tab == 'messages'}", id: "messages-tab-link", data: { tab: 'messages' } do %>
             <i class="comments icon"></i> Messages
+            <span id="messages-unread-badge" class="ui orange circular label" style="display: none;">0</span>
           <% end %>
         </div>
       </div>

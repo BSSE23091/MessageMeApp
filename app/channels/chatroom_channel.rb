@@ -25,5 +25,3 @@ class ChatroomChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 end
-
-
